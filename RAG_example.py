@@ -2,8 +2,10 @@ from pprint import pprint
 import nest_asyncio
 nest_asyncio.apply()
 
-from llama_index.core import SimpleDirectoryReader
+from llama_index.core import SimpleDirectoryReader, VectorStoreIndex, StorageContext
 from llama_index.core.schema import MetadataMode
+from llama_index.embeddings.huggingface import HuggingFaceEmbedding
+
 
 docs = SimpleDirectoryReader("data").load_data()
 
@@ -64,3 +66,37 @@ nodes = pipeline.run(
 print(f"Node length: {len(nodes)}")
 pprint(nodes[0].__dict__)
 print(nodes[0].get_content(metadata_mode=MetadataMode.LLM))
+
+
+hf_embeddings = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
+test_embed = hf_embeddings.get_text_embedding("Hello world")
+print("\n\n\n")
+print(test_embed)
+print("\n\n\n")
+
+index = VectorStoreIndex(nodes, embed_model=hf_embeddings)
+
+## Query the index with a query engine ##
+query_engine = index.as_query_engine(
+    llm=llm_transformer,
+)
+
+response = query_engine.query("How do I get a gift card?")
+print(f"RESPONSE: \n{response.__dict__}\n\n\n\n")
+
+## Store the index to persistant storage ##
+import chromadb
+from llama_index.vector_stores.chroma import ChromaVectorStore
+
+# Initialize client, setting path to save database
+db = chromadb.PersistentClient(path="./chroma_db")
+
+# Create colection
+chroma_collection = db.get_or_create_collection("quickstart")
+
+# Assign chrome as the vector_store to the context
+vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
+storage_context = StorageContext.from_defaults(vector_store=vector_store)
+
+# Create the index
+index = VectorStoreIndex(nodes, storage_context=storage_context)
