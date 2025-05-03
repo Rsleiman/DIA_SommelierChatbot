@@ -34,7 +34,7 @@ load_dotenv()
 
 from llama_index.llms.openai import OpenAI
 llm_transformer = OpenAI(
-    model="gpt-3.5-turbo",
+    model="gpt-4o-mini",
     openai_api_key=os.getenv("OPENAI_API_KEY")
 )
 
