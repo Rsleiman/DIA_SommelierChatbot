@@ -1,14 +1,23 @@
 import instructor
 from rich.console import Console
 from pydantic import BaseModel, Field
-# from src.llm.client import get_llm # NOT WOROKING: MODULENOTFOUNDERROR
+import logfire
+from typing import List, TypedDict
+import sys
+from pathlib import Path
+# from atomic.tools
+
+# Add the 'experimenting' directory to sys.path
+sys.path.append(str(Path(__file__).parent.parent.parent / "experimenting"))
+from query_chroma import get_retriever # type: ignore
+
+
 # TEMP REPLACEMENT:
 ###################################################
 from dotenv import load_dotenv
 from openai import OpenAI
 import os
 load_dotenv()
-import logfire
 api_key = os.getenv("OPENAI_API_KEY")
 if not api_key:
     raise ValueError("OPENAI_API_KEY not found.")
@@ -21,10 +30,34 @@ def get_llm() -> OpenAI:
 ###################################################
 
 
-from atomic_agents.agents.base_agent import BaseIOSchema, BaseAgent, BaseAgentConfig, BaseAgentInputSchema, AgentMemory, SystemPromptGenerator
+from atomic_agents.agents.base_agent import BaseIOSchema, BaseAgent, BaseAgentConfig, BaseAgentInputSchema, AgentMemory, SystemPromptGenerator, SystemPromptContextProviderBase
 
 console = Console()
 memory = AgentMemory()
+
+
+# class ChunkItem(BaseModel): #TODO: Find out structure of retriever.retieve() and apply to this
+#     content: str
+#     metadata: dict
+
+
+class RAGContextProvider(SystemPromptContextProviderBase):
+    """Context provider for RAG (Retrieval-Augmented Generation)."""
+    def __init__(self, title: str):
+        super().__init__(title)
+        self.chunks = []
+
+    def set_chunks(self, chunks): #TODO: set chunks: List[ChunkItem])
+        self.chunks = chunks
+
+    def get_info(self) -> str:
+        if not self.chunks:
+            return "No relevant information found."
+        context_info = ""
+        for node in self.chunks:
+            context_info += f"{node.get_content()}\n"
+        return context_info
+    
 
 
 class CustomInputSchema(BaseIOSchema):
@@ -45,6 +78,8 @@ initial_message = CustomOutputSchema(
 )
 
 memory.add_message("assistant", initial_message)
+rag_context_provider = RAGContextProvider(title="Food & Wine Menu RAG Retrieval")
+
 
 system_prompt_generator = SystemPromptGenerator(
     background= [
@@ -65,9 +100,12 @@ system_prompt_generator = SystemPromptGenerator(
         "You will provide clear and concise response.",
         "You will friendly, but show passion in your responses, engaging the user.",
         "Do not be too formal and professional. Be personable.",
-
+        "When identifying a dish, only mention the main ingredient. Do mention the cooking method and ingredients if they are relevant to the wine pairing.",
     ],
-    # context_providers = None
+    context_providers = {
+        "RAG": rag_context_provider,
+    }
+
 )
 
 agent = BaseAgent(
@@ -76,8 +114,9 @@ agent = BaseAgent(
         model="gpt-4o-mini",
         system_prompt_generator=system_prompt_generator,
         memory=memory,
+        input_schema=CustomInputSchema,
         output_schema=CustomOutputSchema
-    ) # type: ignore PYLANCE ERROR SHOWING UP
+    ) # type: ignore 
 )
 
 while True:
@@ -87,6 +126,13 @@ while True:
     if user_input.lower() in ["/exit", "/quit"]:
         console.print("Exiting chat...")
         break
+
+    # Query the RAG with the user's input
+    retriever = get_retriever() # -> BaseRetriever
+    context = retriever.retrieve(user_input) # -> List[NodeWithScore]
+
+    if context:
+        rag_context_provider.set_chunks(context)
 
     # Process the user's input through the agent
     input_schema = BaseAgentInputSchema(chat_message=user_input)
