@@ -7,29 +7,9 @@ import sys
 from pathlib import Path
 # from atomic.tools
 
-# Add the 'experimenting' directory to sys.path
-sys.path.append(str(Path(__file__).parent.parent.parent / "experimenting"))
-from query_chroma import get_retriever # type: ignore
-
-
-# TEMP REPLACEMENT:
-###################################################
-from dotenv import load_dotenv
-from openai import OpenAI
-import os
-load_dotenv()
-api_key = os.getenv("OPENAI_API_KEY")
-if not api_key:
-    raise ValueError("OPENAI_API_KEY not found.")
-def get_llm() -> OpenAI:
-    llm = OpenAI(
-        api_key=os.getenv("OPENAI_API_KEY")
-    )
-    logfire.info("LLM initialized")
-    return llm
-###################################################
-
-
+sys.path.append(str(Path(__file__).parent.parent.parent))
+from experimenting.query_chroma import get_retriever
+from src.llm.client import get_llm
 from atomic_agents.agents.base_agent import BaseIOSchema, BaseAgent, BaseAgentConfig, BaseAgentInputSchema, AgentMemory, SystemPromptGenerator, SystemPromptContextProviderBase
 
 console = Console()
