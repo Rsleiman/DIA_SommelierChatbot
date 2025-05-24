@@ -4,7 +4,7 @@ import os
 load_dotenv()
 import logfire
 
-
+logfire.configure()
 
 api_key = os.getenv("OPENAI_API_KEY")
 
@@ -19,4 +19,5 @@ def get_llm() -> OpenAI:
     logfire.info("LLM initialized")
     return llm
 
-llm = get_llm()    
+llm = get_llm()   
+logfire.instrument_openai(llm) 
