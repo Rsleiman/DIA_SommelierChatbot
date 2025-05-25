@@ -22,7 +22,8 @@ initial_message = CustomOutputSchema(
         Can I interest you in any wine to pair with your meal?",
 )
 
-sommelier_system_prompt_generator = SystemPromptGenerator(
+# TODO: Change system prompt to be more specific to general inquiries in router architecture
+general_inquiry_system_prompt_generator = SystemPromptGenerator(
     background= [
         "You are a sommelier at a restaurant.",
         "You are here to help customers choose the best wine to pair with their meal.",
@@ -48,11 +49,11 @@ sommelier_system_prompt_generator = SystemPromptGenerator(
     }
 )
 
-sommelier_agent = BaseAgent(
+general_inquiry_agent = BaseAgent(
     config=BaseAgentConfig(
         client=instructor.from_openai(llm),
         model="gpt-4o-mini",
-        system_prompt_generator=sommelier_system_prompt_generator,
+        system_prompt_generator=general_inquiry_system_prompt_generator,
         input_schema=CustomInputSchema,
         output_schema=CustomOutputSchema
     ) # type: ignore
