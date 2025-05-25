@@ -10,7 +10,7 @@ from src.agents.router_agent import router_agent, IntentOutputSchema, CustomInpu
 from src.agents.wine_pairing_agent import wine_pairing_agent, rag_context_provider
 from src.agents.food_pairing_agent import food_pairing_agent
 from src.agents.general_inquiry_agent import general_inquiry_agent
-from RAG.query_chroma import get_retriever
+from rag.query_chroma import get_retriever
 
 st.title("💬 Sommelier Chatbot")
 st.caption("🚀 Your AI wine expert")

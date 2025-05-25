@@ -20,7 +20,7 @@ from llama_index.core.ingestion import IngestionPipeline
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.core.node_parser import SentenceSplitter
 
-from RAG.wine_food_characteristics_extractor import WineFoodCharacteristicsExtractor
+from rag.wine_food_characteristics_extractor import WineFoodCharacteristicsExtractor
 
 # Extract data from pdfs
 data_path = src_path / "data"
