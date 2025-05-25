@@ -12,6 +12,18 @@ from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
 docs = SimpleDirectoryReader(data_path, exclude=[data_path / "extra menus"]).load_data()
 
+for doc in docs:
+    # Exclusions from embeddings
+    excluded_keys = [
+        'page_label', 'file_name', 'file_path', 'file_type',
+        'file_size', 'creation_date', 'last_modified_date'
+    ]
+    doc.excluded_embed_metadata_keys = excluded_keys
+    doc.excluded_llm_metadata_keys = excluded_keys
+
+    doc.text_template = "{content}"
+
+
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -26,18 +38,18 @@ from llama_index.core.extractors import TitleExtractor, QuestionsAnsweredExtract
 from llama_index.core.node_parser import SentenceSplitter
 
 text_splitter = SentenceSplitter(
-    separator="\n", chunk_size=250, chunk_overlap=50
+    separator="\n", chunk_size=80, chunk_overlap=20
 )
-title_extractor = TitleExtractor(llm=llm_transformer, nodes=3)
-qa_extractor = QuestionsAnsweredExtractor(llm=llm_transformer, questions=3)
+# title_extractor = TitleExtractor(llm=llm_transformer, nodes=3)
+# qa_extractor = QuestionsAnsweredExtractor(llm=llm_transformer, questions=3)
 
 from llama_index.core.ingestion import IngestionPipeline
 
 pipeline = IngestionPipeline(
     transformations=[
         text_splitter,
-        title_extractor,
-        qa_extractor
+        # title_extractor,
+        # qa_extractor
     ]
 )
 
