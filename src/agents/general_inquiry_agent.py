@@ -8,11 +8,8 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent.parent))
 from src.llm.client import llm
-from atomic_agents.agents.base_agent import BaseIOSchema, BaseAgent, BaseAgentConfig, BaseAgentInputSchema, AgentMemory, SystemPromptGenerator, SystemPromptContextProviderBase
+from atomic_agents.agents.base_agent import BaseIOSchema, BaseAgent, BaseAgentConfig, SystemPromptGenerator, SystemPromptContextProviderBase
 from src.agents.context_provider import rag_context_provider
-
-sommelier_memory = AgentMemory()
-
 
 # class ChunkItem(BaseModel): #TODO: Find out structure of retriever.retieve() and apply to this
 #     content: str
@@ -31,8 +28,6 @@ initial_message = CustomOutputSchema(
     response="Hello! Welcome to our restaurant.\
         Can I interest you in any wine to pair with your meal?",
 )
-sommelier_memory.add_message("assistant", initial_message) #TODO: Add initial message to chat loop
-
 
 sommelier_system_prompt_generator = SystemPromptGenerator(
     background= [
@@ -65,7 +60,6 @@ sommelier_agent = BaseAgent(
         client=instructor.from_openai(llm),
         model="gpt-4o-mini",
         system_prompt_generator=sommelier_system_prompt_generator,
-        memory=sommelier_memory,
         input_schema=CustomInputSchema,
         output_schema=CustomOutputSchema
     ) # type: ignore
