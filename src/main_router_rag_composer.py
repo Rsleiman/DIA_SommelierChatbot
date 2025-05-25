@@ -1,5 +1,5 @@
 ### To run, type:
-# streamlit run src/main_router.py --server.fileWatcherType none
+# streamlit run src/main_router_rag_composer.py --server.fileWatcherType none
 from typing import cast
 import sys
 from pathlib import Path
@@ -35,7 +35,7 @@ if prompt := st.chat_input():
     response = router_agent.run(input_schema)
     response = cast(IntentOutputSchema, response)
 
-    retriever = get_retriever(".chroma_basic")
+    retriever = get_retriever(".chroma_enriched")
     context = retriever.retrieve(prompt)
     if context:
         rag_context_provider.set_chunks(context)
