@@ -1,4 +1,5 @@
-### To run, type: streamlit run src/main_rag.py --server.fileWatcherType none
+### To run, type:
+# streamlit run src/main_rag.py --server.fileWatcherType none
 
 import sys
 from pathlib import Path
@@ -34,8 +35,10 @@ if prompt := st.chat_input():
     response = sommelier_agent.run(input_schema)
     # If response is a pydantic object, get the string
     if hasattr(response, "response"):
+        print("Response has attribute response. is a pydantic object, getting the string")
         msg = response.response
     else:
+        print("Response is not a pydantic object, using str()")
         msg = str(response)
 
     st.session_state.messages.append({"role": "assistant", "content": msg})
