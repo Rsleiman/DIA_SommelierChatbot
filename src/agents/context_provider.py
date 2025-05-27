@@ -15,6 +15,7 @@ class RAGContextProvider(SystemPromptContextProviderBase):
         context_info = ""
         for node in self.chunks:
             context_info += f"- {node.get_content()}\n"
+            # print(f"Context chunk: {node.get_content()}") # For debugging purposes
         return context_info
 
 rag_context_provider = RAGContextProvider(title="Food & Wine Menu RAG Retrieval")
