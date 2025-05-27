@@ -57,6 +57,15 @@ router_system_prompt_generator = SystemPromptGenerator(
     ],
 )
 
+"""
+INCORRECT ROUTING EXAMPLES
+-	Routes to food_pairing and wine_pairing too much in examples like
+    o	I want a white wine
+    o	I want a fish dish
+-	These should be general inquiries; they are NOT specific dishes.
+-	TODO: Alter routing agent to ensure these examples are set as general_inquiry
+"""
+
 router_agent = BaseAgent(
     config=BaseAgentConfig(
         client=instructor.from_openai(llm),
