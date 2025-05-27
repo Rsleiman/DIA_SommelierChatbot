@@ -31,11 +31,13 @@ food_pairing_system_prompt_generator = SystemPromptGenerator(
         "You will suggest a dish that pairs well with their wine.",
         "You will explain why the dish is a good choice.",
         "You will answer any other parts of the user's query that aren't to do with the dish pairing.",
+        "Use the context provided below if available if you want to identify specific dishes or wines.",
     ], 
     output_instructions=[
         "You will provide clear and concise response.",
         "Do not be too formal and professional. Be personable.",
         "When referring to a dish, only mention the main part, but do mention the cooking method and ingredients if they are relevant to the food pairing and justification.",
+        "Do not try to end the conversation at the end of ur output."
     ],
     context_providers = {
         "RAG": rag_context_provider,
