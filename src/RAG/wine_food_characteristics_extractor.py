@@ -16,9 +16,19 @@ Here is the context:
 {context_str}
 
 
+Identify any wine or food items mentioned in the context.
 
-Identify any wine or food items mentioned in the context. For each wine, extract its characteristics (such as colour, body, acidity, tannin, sweetness, etc.).
-For each food, extract its characteristics (such as meat type, creaminess, heaviness, etc.).
+For each wine, extract its characteristics.
+You are encouraged to use the following vocabulary for wine characteristics:
+"body": "light-bodied", "medium-bodied", "full-bodied",
+"acidity": "low acidity", "medium acidity", "high acidity",
+"tannin": "low tannin", "medium tannin", "high tannin",
+"sweetness": "dry", "sweet",
+"colour": "white", "red", "rosé",
+"flavour": "fruity", "floral", "herbaceous", "spicy", "earthy", "oaky", "toasty", "nutty", "smoky", "vegetal", "citrus",
+
+For each food, extract its characteristics (such as meat type, creaminess, heaviness, or anything that is associated with the dish.).
+You are encouraged to infer characteristics from the dish name and description (e.g., 'duck confit with a gravy' is fatty, rich, savoury)
 
 Return your answer as a JSON object with two keys: "wine_characteristics" and "food_characteristics". 
 Each key should map to a list of strings, where each string describes the wine or food item with its characteristics.
@@ -35,9 +45,9 @@ Example:
   ]
 }
 
-If you don't identify any wine or food items, return empty lists for both keys values.
-NOTE: This context comes from a text splitting process, so it may not contain complete sentences or paragraphs, so take care when identifying wines and dishes.
-""" #TODO: Change Note instructions
+If you don't identify any obvious wine or food items in the context, return empty lists for the key's values.
+NOTE: The context may begin or end mid-entry due to text splitting, and might not include full names or descriptions of wines or dishes. Ignore incomplete fragments and only extract information when items can be confidently identified.
+"""
 
 class WineFoodCharacteristicsExtractor(BaseExtractor):
     """

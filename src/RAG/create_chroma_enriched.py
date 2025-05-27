@@ -10,7 +10,7 @@ load_dotenv()
 
 from llama_index.llms.openai import OpenAI
 llm_transformer = OpenAI(
-    model="gpt-4o-mini",
+    model="gpt-4o",
     openai_api_key=os.getenv("OPENAI_API_KEY")
 )
 
@@ -40,7 +40,7 @@ for doc in docs:
 
 # Split docs into chunks
 text_splitter = SentenceSplitter(
-    separator="\n", chunk_size=80, chunk_overlap=20
+    separator="\n", chunk_size=100, chunk_overlap=30
 )
 
 # Extract Wine and Food characteristics
