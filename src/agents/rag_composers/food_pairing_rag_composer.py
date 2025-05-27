@@ -7,13 +7,9 @@ from typing import List
 sys.path.append(str(Path(__file__).parent.parent.parent))
 from src.llm.client import llm
 from atomic_agents.agents.base_agent import BaseIOSchema, BaseAgent, BaseAgentConfig, SystemPromptGenerator
+from src.agents.router_agent import CustomInputSchema
 
-class RAGComposerInputSchema(BaseIOSchema):
-    """Custom input schema for the agent."""
-    query: str = Field(description="The user query to be processed by the agent.")
-    message_history: List[dict] = Field(description="The message history of the conversation, including previous user queries and agent responses.")
-
-class RAGComposerOutputSchema(BaseIOSchema):
+class FoodPairingRAGComposerOutputSchema(BaseIOSchema):
     """Custom output schema for the agent."""
     wine_item: str = Field(
         description="The identified wine item that the user has intended to order."
@@ -50,7 +46,7 @@ food_pairing_rag_composer_agent = BaseAgent(
         client=instructor.from_openai(llm),
         model="gpt-4o-mini",
         system_prompt_generator=food_rag_prompt_generator,
-        input_schema=RAGComposerInputSchema,
-        output_schema=RAGComposerOutputSchema
+        input_schema=CustomInputSchema,
+        output_schema=FoodPairingRAGComposerOutputSchema
     ) # type: ignore
 )
