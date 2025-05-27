@@ -6,7 +6,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 import streamlit as st
 from rag.query_chroma import get_retriever
-from src.agents.sommelier_agent import sommelier_agent, rag_context_provider, CustomOutputSchema, CustomInputSchema
+from src.agents.sommelier_agent import sommelier_agent, rag_context_provider, CustomInputSchema
 
 st.title("💬 Sommelier Chatbot")
 st.caption("🚀 Your AI wine expert")

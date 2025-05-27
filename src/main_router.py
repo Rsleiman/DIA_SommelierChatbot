@@ -26,26 +26,30 @@ for msg in st.session_state.messages:
 if prompt := st.chat_input():
     input_schema = CustomInputSchema(
         query=prompt,
-        message_history=st.session_state.messages[-3:]) # Return last 3 messages (previous assistant response, user reply, most recent assistant reply)
+        message_history=st.session_state.messages[-3:]) # Return last 3 messages
     # Add user message to session
     st.session_state.messages.append({"role": "user", "content": prompt})
     st.chat_message("user").write(prompt)
 
-    # Intent classification
-    response = router_agent.run(input_schema)
-    response = cast(IntentOutputSchema, response)
-
+    # RAG retrieval
     retriever = get_retriever(".chroma_basic")
     context = retriever.retrieve(prompt)
     if context:
         rag_context_provider.set_chunks(context)
+
+    # Intent classification
+    router_response = router_agent.run(input_schema)
+    router_response = cast(IntentOutputSchema, router_response)
         
-    if response.intent == Intent.WINE_PAIRING:
-        msg = wine_pairing_agent.run(input_schema)
-    elif response.intent == Intent.FOOD_PAIRING:
-        msg = food_pairing_agent.run(input_schema)
+    if router_response.intent == Intent.WINE_PAIRING:
+        agent_response = wine_pairing_agent.run(input_schema)
+        msg = agent_response.response # type: ignore
+    elif router_response.intent == Intent.FOOD_PAIRING:
+        agent_response = food_pairing_agent.run(input_schema)
+        msg = agent_response.response # type: ignore
     else:
-        msg = general_inquiry_agent.run(input_schema)
+        agent_response = general_inquiry_agent.run(input_schema)
+        msg = agent_response.response # type: ignore
 
     st.session_state.messages.append({"role": "assistant", "content": msg})
     st.chat_message("assistant").write(msg)

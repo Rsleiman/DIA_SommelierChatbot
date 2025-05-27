@@ -43,14 +43,17 @@ if prompt := st.chat_input():
         
     if response.intent == Intent.WINE_PAIRING:
         composer_set_chunks(retriever, input_schema, rag_context_provider, wine_pairing_rag_composer_agent)
-        msg = wine_pairing_agent.run(input_schema)
+        agent_response = wine_pairing_agent.run(input_schema)
+        msg = agent_response.response # type: ignore
 
     elif response.intent == Intent.FOOD_PAIRING:
         composer_set_chunks(retriever, input_schema, rag_context_provider, food_pairing_rag_composer_agent)
-        msg = food_pairing_agent.run(input_schema)
+        agent_response = food_pairing_agent.run(input_schema)
+        msg = agent_response.response # type: ignore
     else:
         composer_set_chunks(retriever, input_schema, rag_context_provider, general_rag_prompt_generator_agent)
-        msg = general_inquiry_agent.run(input_schema)
+        agent_response = general_inquiry_agent.run(input_schema)
+        msg = agent_response.response # type: ignore
 
     st.session_state.messages.append({"role": "assistant", "content": msg})
     st.chat_message("assistant").write(msg)
