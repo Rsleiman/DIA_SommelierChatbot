@@ -68,6 +68,8 @@ general_inquiry_system_prompt_generator = SystemPromptGenerator(
     output_instructions=[
         "Return a natural, helpful answer to the user's question with passion and personality.",
         "Keep your tone knowledgeable but approachable.",
+        "While the context below may contain various dishes and wines, only mention those that are appropriate and relevant to the user's question.",
+        "Do not try to end the conversation at the end of ur output."
     ],
     context_providers = {
         "RAG": rag_context_provider,

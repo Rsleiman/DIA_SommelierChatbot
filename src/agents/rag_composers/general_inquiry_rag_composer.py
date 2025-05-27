@@ -1,5 +1,3 @@
-#TODO
-
 import instructor
 from pydantic import Field
 import sys
@@ -30,14 +28,16 @@ general_rag_prompt_generator = SystemPromptGenerator(
         "Your goal is to convert a user's input and message history into semantic queries that will match menu items that may help a sommelier understand the user's question.",
     ],
     steps=[
-        "Review the user message and message history.",
-        "Determine whether a wine or food menu context is needed to reply.",
-        "If so, generate 1 to 3 short semantic queries that can be used to retrieve relevant items from the menu database.",
+        "Identify the user's request from the user message.",
+        "If there is no clear request, use the message history to infer the user's request.",
+        "Determine whether a wine or food menu context is needed to reply just to the user's request.",
+        "If so, generate 1 to 3 short semantic queries that can be used to retrieve relevant items from the menu database to answer just the user's request.",
         "If not, return an empty list.",
     ],
     output_instructions=[
         "Return a JSON object with a `queries` field containing a list of 1 to 3 string queries.",
-        "Example: { \"queries\": [\"duck confit\", \"Pinot Noir\", \"red wine with earthy notes\"] }",
+        "Example: { \"queries\": [\"meaty dish\", \"beef\", \"earthy\"] }",
+        "or { \"queries\": [\" red wine, oaky, full-bodied\"] }",
         "Avoid unnecessary words, punctuation, or explanations.",
     ],
 )

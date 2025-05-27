@@ -37,6 +37,7 @@ food_pairing_system_prompt_generator = SystemPromptGenerator(
         "You will provide clear and concise response.",
         "Do not be too formal and professional. Be personable.",
         "When referring to a dish, only mention the main part, but do mention the cooking method and ingredients if they are relevant to the food pairing and justification.",
+        "While the context below may contain various dishes and wines, only mention those that are appropriate and relevant to the user's question.",
         "Do not try to end the conversation at the end of ur output."
     ],
     context_providers = {
