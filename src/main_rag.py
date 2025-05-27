@@ -33,13 +33,7 @@ if prompt := st.chat_input():
     # Agent response
     input_schema = CustomInputSchema(query=prompt)
     response = sommelier_agent.run(input_schema)
-    # If response is a pydantic object, get the string
-    if hasattr(response, "response"):
-        print("Response has attribute response. is a pydantic object, getting the string")
-        msg = response.response # type: ignore
-    else:
-        print("Response is not a pydantic object, using str()")
-        msg = str(response)
+    msg = response.response # type: ignore
 
     st.session_state.messages.append({"role": "assistant", "content": msg})
     st.chat_message("assistant").write(msg)
