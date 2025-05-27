@@ -8,11 +8,6 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-from llama_index.llms.openai import OpenAI
-llm_transformer = OpenAI(
-    model="gpt-4o-mini",
-    openai_api_key=os.getenv("OPENAI_API_KEY")
-)
 
 from llama_index.core import SimpleDirectoryReader, VectorStoreIndex, StorageContext
 from llama_index.core.schema import MetadataMode
@@ -33,7 +28,6 @@ for doc in docs:
     ]
     doc.excluded_embed_metadata_keys = excluded_keys
     doc.excluded_llm_metadata_keys = excluded_keys
-
     doc.text_template = "{content}"
 
 # Split docs into chunks

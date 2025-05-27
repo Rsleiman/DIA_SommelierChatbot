@@ -1,6 +1,5 @@
 from pathlib import Path
 from pprint import pprint
-from typing import List
 import chromadb
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.core import VectorStoreIndex, StorageContext
@@ -38,6 +37,7 @@ def get_retriever(chroma_db__folder: str) -> BaseRetriever:
     retriever = index.as_retriever()
     return retriever
 
+# Example usage
 if __name__ == "__main__":
     retriever = get_retriever(".chroma_basic")
     query = "What wine would you recommend with the slow-cooked duck?"
