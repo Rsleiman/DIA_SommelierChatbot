@@ -40,7 +40,7 @@ for doc in docs:
 
 # Split docs into chunks
 text_splitter = SentenceSplitter(
-    separator="\n", chunk_size=100, chunk_overlap=30
+    separator=" ", chunk_size=100, chunk_overlap=30
 )
 
 # Extract Wine and Food characteristics
@@ -59,6 +59,7 @@ nodes = pipeline.run(
     in_place=True,
     show_progress=True
 )
+
 
 ## Debugging ##
 # print(f"Node length: {len(nodes)}")

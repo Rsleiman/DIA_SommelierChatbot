@@ -32,7 +32,7 @@ for doc in docs:
 
 # Split docs into chunks
 text_splitter = SentenceSplitter(
-    separator="\n", chunk_size=100, chunk_overlap=30
+    separator=" ", chunk_size=100, chunk_overlap=30
 )
  
 pipeline = IngestionPipeline(
